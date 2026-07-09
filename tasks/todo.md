@@ -12,7 +12,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: unit tests on parsers (fixtures); spot-check ~500 S&P rows, ~8–11k total symbols.
   - Files: src/split_signal/data/universe.py, tests/test_universe.py, data/fixtures/*, docs/DATA_QUALITY.md
 
-- [ ] **A2. Price ingestion (cache-first, resumable)**
+- [x] **A2. Price ingestion (cache-first, resumable)**
   - Acceptance: `split-signal ingest` pulls daily adjusted OHLCV per ticker to data/raw/prices/, skips already-cached tickers, throttles, logs failures; coverage report appended to DATA_QUALITY.md; Stooq fallback wired.
   - Verify: fixture-replay unit tests; live smoke on ~20 tickers; then full background run.
   - Files: src/split_signal/data/{prices,stooq}.py, src/split_signal/data/quality.py, tests/test_prices.py
