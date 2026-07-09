@@ -20,7 +20,15 @@ decision gate. Every ingestion run appends a dated section below.
 3. **Pre-2009 fundamentals are thin.** SEC XBRL companyfacts coverage starts
    ~2009. Earlier study years lean on price-based features; fundamental
    feature coverage per year is logged by the ingestion runs below.
-4. **Historical S&P 500 membership** is not reliably available free; the
+4. **yfinance Close is split-adjusted** (verified live 2026-07-09: implied
+   ex-date ratios ~1.0 on AAPL/NVDA/TSLA/GE/BRK-B, even with
+   `auto_adjust=False`; only dividends distinguish Close from Adj Close).
+   True as-traded share prices are reconstructed via
+   `splits.unadjusted_close` (close × product of later split ratios).
+   Ratio plausibility on adjusted series: implied ratio should be ~1.0;
+   large deviations flag bogus recorded splits. Bogus ratios below ~1.35
+   are indistinguishable from market noise — accepted limitation.
+5. **Historical S&P 500 membership** is not reliably available free; the
    S&P flag reflects *current* membership. Backtests therefore treat the
    S&P flag as descriptive metadata, not a point-in-time selection filter.
 
