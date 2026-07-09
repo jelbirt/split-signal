@@ -1,0 +1,52 @@
+{
+  "cik": 320193,
+  "entityName": "Apple Inc.",
+  "facts": {
+    "dei": {
+      "EntityCommonStockSharesOutstanding": {
+        "units": {
+          "shares": [
+            {"end": "2020-07-17", "val": 4275634000, "fy": 2020, "fp": "Q3", "form": "10-Q", "filed": "2020-07-31"},
+            {"end": "2020-10-16", "val": 17001802000, "fy": 2020, "fp": "FY", "form": "10-K", "filed": "2020-10-30"}
+          ]
+        }
+      }
+    },
+    "us-gaap": {
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {
+        "units": {
+          "USD": [
+            {"start": "2020-03-29", "end": "2020-06-27", "val": 59685000000, "fy": 2020, "fp": "Q3", "form": "10-Q", "filed": "2020-07-31"},
+            {"start": "2019-09-29", "end": "2020-06-27", "val": 209817000000, "fy": 2020, "fp": "Q3", "form": "10-Q", "filed": "2020-07-31"},
+            {"start": "2020-06-28", "end": "2020-09-26", "val": 64698000000, "fy": 2020, "fp": "FY", "form": "10-K", "filed": "2020-10-30"},
+            {"start": "2019-09-29", "end": "2020-09-26", "val": 274515000000, "fy": 2020, "fp": "FY", "form": "10-K", "filed": "2020-10-30"},
+            {"start": "2019-09-29", "end": "2020-09-26", "val": 274515000000, "fy": 2021, "fp": "FY", "form": "10-K", "filed": "2021-10-29"}
+          ]
+        }
+      },
+      "SalesRevenueNet": {
+        "units": {
+          "USD": [
+            {"start": "2011-09-25", "end": "2012-09-29", "val": 156508000000, "fy": 2012, "fp": "FY", "form": "10-K", "filed": "2012-10-31"},
+            {"start": "2019-09-29", "end": "2020-09-26", "val": 999000000000, "fy": 2020, "fp": "FY", "form": "10-K", "filed": "2020-10-30"}
+          ]
+        }
+      },
+      "EarningsPerShareDiluted": {
+        "units": {
+          "USD/shares": [
+            {"start": "2019-09-29", "end": "2020-09-26", "val": 3.28, "fy": 2020, "fp": "FY", "form": "10-K", "filed": "2020-10-30"}
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "units": {
+          "USD": [
+            {"start": "2019-09-29", "end": "2020-09-26", "val": 57411000000, "fy": 2020, "fp": "FY", "form": "10-K", "filed": "2020-10-30"},
+            {"start": "2019-09-29", "end": "2020-09-26", "val": 57411000000, "fy": 2020, "fp": "FY", "form": "8-K", "filed": "2020-10-29"}
+          ]
+        }
+      }
+    }
+  }
+}

@@ -27,7 +27,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: unit tests incl. multi-split + reverse-split fixtures; known-splits assertion list.
   - Files: src/split_signal/data/splits.py, tests/test_splits.py, docs/DATA_QUALITY.md
 
-- [ ] **A4. Fundamentals via SEC EDGAR**
+- [x] **A4. Fundamentals via SEC EDGAR** *(code done; working-set ingestion run follows A2b)*
   - Acceptance: companyfacts cached per CIK; fundamentals.parquet with revenue/EPS/net income/shares + filing dates; CIK↔ticker map; coverage-by-year logged.
   - Verify: unit tests on XBRL normalization fixtures; spot-check AAPL revenue vs. known figures.
   - Files: src/split_signal/data/{edgar,cik}.py, tests/test_edgar.py
