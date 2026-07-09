@@ -1,0 +1,53 @@
+# Task List: Split-Signal — Phase A
+
+Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B tasks get written after the A8 methodology gate.
+
+- [ ] **A0. Scaffold project**
+  - Acceptance: `uv sync` works; `uv run split-signal --help` shows ingest/score/scan stubs; `uv run pytest` and `uv run ruff check .` pass on empty suite; data dirs gitignored.
+  - Verify: run all four commands.
+  - Files: pyproject.toml, .gitignore, src/split_signal/{__init__,cli}.py, tests/test_cli.py
+
+- [ ] **A1. Build universe**
+  - Acceptance: `universe.parquet` with S&P 500 current members + full active US-listed symbol directory, source-flagged; survivorship gap noted in docs/DATA_QUALITY.md.
+  - Verify: unit tests on parsers (fixtures); spot-check ~500 S&P rows, ~8–11k total symbols.
+  - Files: src/split_signal/data/universe.py, tests/test_universe.py, data/fixtures/*, docs/DATA_QUALITY.md
+
+- [ ] **A2. Price ingestion (cache-first, resumable)**
+  - Acceptance: `split-signal ingest` pulls daily adjusted OHLCV per ticker to data/raw/prices/, skips already-cached tickers, throttles, logs failures; coverage report appended to DATA_QUALITY.md; Stooq fallback wired.
+  - Verify: fixture-replay unit tests; live smoke on ~20 tickers; then full background run.
+  - Files: src/split_signal/data/{prices,stooq}.py, src/split_signal/data/quality.py, tests/test_prices.py
+
+- [ ] **A2b. Full-universe ingestion run + working-set reduction**
+  - Acceptance: background run complete; working set = S&P 500 ∪ splitters retained; coverage stats (≥15y history %) reviewed. ← checkpoint 1
+  - Verify: DATA_QUALITY.md numbers reviewed with owner.
+  - Files: data/* (generated), docs/DATA_QUALITY.md
+
+- [ ] **A3. Split-event catalog**
+  - Acceptance: splits.parquet (ticker, date, ratio, forward/reverse) for working set; ratio sanity-check vs. ex-date price discontinuity; per-year counts in DATA_QUALITY.md; AAPL/NVDA/TSLA known splits all present. ← checkpoint 2
+  - Verify: unit tests incl. multi-split + reverse-split fixtures; known-splits assertion list.
+  - Files: src/split_signal/data/splits.py, tests/test_splits.py, docs/DATA_QUALITY.md
+
+- [ ] **A4. Fundamentals via SEC EDGAR**
+  - Acceptance: companyfacts cached per CIK; fundamentals.parquet with revenue/EPS/net income/shares + filing dates; CIK↔ticker map; coverage-by-year logged.
+  - Verify: unit tests on XBRL normalization fixtures; spot-check AAPL revenue vs. known figures.
+  - Files: src/split_signal/data/{edgar,cik}.py, tests/test_edgar.py
+
+- [ ] **A5. Point-in-time feature library**
+  - Acceptance: features (trailing returns, price level, ATH distance, growth rates, mcap trajectory, volatility, prior splits, sector) each take `as_of` and raise on post-`as_of` data; lookahead-guard tests pass. ← checkpoint 3
+  - Verify: `uv run pytest tests/test_features.py` — known-answer + guard tests.
+  - Files: src/split_signal/features/{price,fundamental,structural}.py, tests/test_features.py
+
+- [ ] **A6. Event study**
+  - Acceptance: notebook + promoted module comparing pre-split feature distributions vs. matched controls; discriminating features identified with effect sizes.
+  - Verify: control-matching unit tests; notebook re-runs clean top-to-bottom.
+  - Files: notebooks/06_event_study.ipynb, src/split_signal/backtest/controls.py, tests/test_controls.py
+
+- [ ] **A7. Forward-return backtest**
+  - Acceptance: train (2006–2018) / holdout (2019–2025) results for split-profile portfolios: 1y/3y/5y returns vs. SPY and momentum baseline; post-split drift measured; honest verdict stated.
+  - Verify: backtest-mechanics unit tests (no-lookahead portfolio formation); notebook re-runs clean.
+  - Files: notebooks/07_backtest.ipynb, src/split_signal/backtest/{engine,baselines}.py, tests/test_backtest.py
+
+- [ ] **A8. Methodology synthesis + gates**
+  - Acceptance: docs/METHODOLOGY.md complete (indicators, weights, evidence, limitations); paid-data recommendation made from DATA_QUALITY.md totals; owner sign-off requested. ← checkpoint 4, HUMAN GATE
+  - Verify: owner review.
+  - Files: docs/METHODOLOGY.md, tasks/todo.md (Phase B tasks added after gate)
