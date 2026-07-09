@@ -1,0 +1,29 @@
+# Data Quality Log
+
+Running log of coverage, gaps, and known limitations per SPEC.md's free-data
+decision gate. Every ingestion run appends a dated section below.
+
+## Standing limitations (free-data tier)
+
+1. **Survivorship bias (universe).** The universe is built from *currently
+   listed* symbols (NASDAQ Trader directories) + *current* S&P 500 members.
+   Companies that split and were later delisted/acquired (e.g., acquired
+   post-split) are invisible. Detection heuristic: forward-split counts per
+   year should be roughly comparable across the study window — a droop in
+   early years relative to known market history indicates missing names.
+   Impact is quantified in the event-study phase and reported in
+   METHODOLOGY.md.
+2. **Execution dates, not announcement dates (splits).** yfinance provides
+   split execution dates only. Feature windows are anchored ≥90 days before
+   execution to largely predate typical announcement lead times (~1–3
+   months). Revisit if post-announcement drift needs precise measurement.
+3. **Pre-2009 fundamentals are thin.** SEC XBRL companyfacts coverage starts
+   ~2009. Earlier study years lean on price-based features; fundamental
+   feature coverage per year is logged by the ingestion runs below.
+4. **Historical S&P 500 membership** is not reliably available free; the
+   S&P flag reflects *current* membership. Backtests therefore treat the
+   S&P flag as descriptive metadata, not a point-in-time selection filter.
+
+## Ingestion runs
+
+(appended automatically by `split-signal ingest`)

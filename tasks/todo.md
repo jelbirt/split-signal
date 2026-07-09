@@ -7,7 +7,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: run all four commands.
   - Files: pyproject.toml, .gitignore, src/split_signal/{__init__,cli}.py, tests/test_cli.py
 
-- [ ] **A1. Build universe**
+- [x] **A1. Build universe** *(2026-07-09: 5,628 symbols, 503 S&P members)*
   - Acceptance: `universe.parquet` with S&P 500 current members + full active US-listed symbol directory, source-flagged; survivorship gap noted in docs/DATA_QUALITY.md.
   - Verify: unit tests on parsers (fixtures); spot-check ~500 S&P rows, ~8–11k total symbols.
   - Files: src/split_signal/data/universe.py, tests/test_universe.py, data/fixtures/*, docs/DATA_QUALITY.md

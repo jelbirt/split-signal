@@ -1,0 +1,8 @@
+ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol
+A|Agilent Technologies, Inc. Common Stock|N|A|N|100|N|A
+BRK.B|Berkshire Hathaway Inc. Class B Common Stock|N|BRK B|N|100|N|BRK=B
+SPY|SPDR S&P 500 ETF Trust|P|SPY|Y|100|N|SPY
+ZTST|NYSE Test Security|N|ZTST|N|100|Y|ZTST
+GE|GE Aerospace Common Stock|N|GE|N|100|N|GE
+ACME.U|Acme SPAC Units, each consisting of one share|N|ACME U|N|100|N|ACME=U
+File Creation Time: 0637-01072026|||||||

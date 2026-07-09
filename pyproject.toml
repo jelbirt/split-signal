@@ -9,6 +9,7 @@ dependencies = [
     "pyarrow>=16",
     "yfinance>=0.2.40",
     "requests>=2.31",
+    "lxml>=6.1.1",
 ]
 
 [dependency-groups]
