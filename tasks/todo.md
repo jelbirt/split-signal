@@ -2,7 +2,7 @@
 
 Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B tasks get written after the A8 methodology gate.
 
-- [ ] **A0. Scaffold project**
+- [x] **A0. Scaffold project**
   - Acceptance: `uv sync` works; `uv run split-signal --help` shows ingest/score/scan stubs; `uv run pytest` and `uv run ruff check .` pass on empty suite; data dirs gitignored.
   - Verify: run all four commands.
   - Files: pyproject.toml, .gitignore, src/split_signal/{__init__,cli}.py, tests/test_cli.py

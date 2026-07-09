@@ -1,0 +1,17 @@
+# Environments
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Data caches (regenerable; fixtures under data/fixtures/ ARE committed)
+data/raw/
+data/processed/
+
+# Notebook noise
+notebooks/.ipynb_checkpoints/
+.ipynb_checkpoints/
+
+# Local scratch
+*.log
