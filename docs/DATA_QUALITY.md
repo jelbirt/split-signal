@@ -70,3 +70,14 @@ decision gate. Every ingestion run appends a dated section below.
 
 - cohorts: 77 quarters (train 51, holdout 26)
 - results: docs/research/profile_backtest_results.md
+
+## 2026-07-10 14:15 UTC — Likelihood model v1 trained
+
+- train rows: 48775 (quarters <= 2017-12-31, base rate 3.37%)
+- train AUC: 0.719
+- artifact: src/split_signal/scoring/likelihood_v1.json
+
+## 2026-07-10 14:15 UTC — Likelihood v1 holdout validation
+
+- holdout AUC 0.740; top-decile lift 3.8x (rate 5.99% vs base 1.58%); top-decile capture 38%
+- report: docs/research/likelihood_validation.md

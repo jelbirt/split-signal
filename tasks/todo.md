@@ -54,7 +54,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
 
 # Phase B — Split Likelihood Index (owner-approved 2026-07-10)
 
-- [ ] **B1. Likelihood model**
+- [x] **B1. Likelihood model** *(2026-07-10: train AUC 0.719)*
   - Acceptance: logistic model (plain numpy — no heavy deps) on the quarterly panel; label = forward split within next 12 months; features from Q1 findings (ATH proximity, prior splits count/recency, momentum, volatility, price level, liquidity); trained on ≤2018 quarters only; calibrated probability → 0–100 index; model artifact + coefficients saved and versioned.
   - Verify: unit tests (training convergence on synthetic data, calibration monotonicity, as_of discipline via panel reuse); coefficients sane (ATH proximity positive, etc.).
   - Files: src/split_signal/scoring/{model,likelihood}.py, tests/test_scoring.py, notebooks/09_likelihood_model.py
