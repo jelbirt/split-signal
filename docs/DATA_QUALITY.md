@@ -42,3 +42,10 @@ decision gate. Every ingestion run appends a dated section below.
 - prices fetched this run: 5608, already cached: 5, failed: 15
 - coverage: 5613/5628 cached, 2557 with >=15y history, 4205 with >=5y, median 12.5y
 - failure sample: AESP (yfinance: empty price frame from yfinance; stooq: 404 Client); ALPX (yfinance: empty price frame from yfinance; stooq: 404 Client); BAC-L (yfinance: empty price frame from yfinance; stooq: 404 Client); EPR-E (yfinance: empty price frame from yfinance; stooq: 404 Client); GAB-H (yfinance: empty price frame from yfinance; stooq: 404 Client); GS-D (yfinance: empty price frame from yfinance; stooq: 404 Client); MBGL (yfinance: empty price frame from yfinance; stooq: 404 Client); MER-K (yfinance: empty price frame from yfinance; stooq: 404 Client); MFP (yfinance: empty price frame from yfinance; stooq: 404 Client); MS-A (yfinance: empty price frame from yfinance; stooq: 404 Client)
+
+## 2026-07-10 00:57 UTC — Split catalog build
+
+- split events: 7316 total (4924 forward, 2392 reverse)
+- implausible ratios flagged: 349
+- forward splits per year since 2006: {2006: 177, 2007: 131, 2008: 54, 2009: 47, 2010: 48, 2011: 63, 2012: 62, 2013: 89, 2014: 106, 2015: 61, 2016: 54, 2017: 64, 2018: 55, 2019: 34, 2020: 42, 2021: 56, 2022: 51, 2023: 46, 2024: 62, 2025: 69, 2026: 34}
+- working set (S&P 500 union 2006+ forward splitters): 1132 tickers

@@ -22,7 +22,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: DATA_QUALITY.md numbers reviewed with owner.
   - Files: data/* (generated), docs/DATA_QUALITY.md
 
-- [ ] **A3. Split-event catalog**
+- [x] **A3. Split-event catalog** *(2026-07-09: 7,316 events, 4,924 forward; checkpoint 2 passed)*
   - Acceptance: splits.parquet (ticker, date, ratio, forward/reverse) for working set; ratio sanity-check vs. ex-date price discontinuity; per-year counts in DATA_QUALITY.md; AAPL/NVDA/TSLA known splits all present. ← checkpoint 2
   - Verify: unit tests incl. multi-split + reverse-split fixtures; known-splits assertion list.
   - Files: src/split_signal/data/splits.py, tests/test_splits.py, docs/DATA_QUALITY.md
