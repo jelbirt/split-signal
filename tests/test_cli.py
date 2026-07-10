@@ -36,10 +36,15 @@ def test_score_requires_tickers() -> None:
     assert result.returncode != 0
 
 
-def test_output_carries_disclaimer() -> None:
+def test_output_carries_disclaimer_and_no_alpha_note(tmp_path) -> None:
+    watchlist = tmp_path / "empty.txt"
+    watchlist.write_text("")
     result = subprocess.run(
-        [sys.executable, "-m", "split_signal.cli", "score", "AAPL"],
+        [sys.executable, "-m", "split_signal.cli", "scan", "--watchlist", str(watchlist)],
         capture_output=True,
         text=True,
     )
-    assert "not financial advice" in (result.stdout + result.stderr).lower()
+    combined = (result.stdout + result.stderr).lower()
+    assert "not financial advice" in combined
+    assert "no expected excess return" in combined
+    assert result.returncode == 1  # nothing scored

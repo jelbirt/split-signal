@@ -59,7 +59,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: unit tests (training convergence on synthetic data, calibration monotonicity, as_of discipline via panel reuse); coefficients sane (ATH proximity positive, etc.).
   - Files: src/split_signal/scoring/{model,likelihood}.py, tests/test_scoring.py, notebooks/09_likelihood_model.py
 
-- [ ] **B2. Historical point-in-time validation** ("would it have called the splits?")
+- [x] **B2. Historical point-in-time validation** *(2026-07-10: PASSED — AUC 0.740, lift 3.8x, all named events >=90th pct)*
   - Acceptance: 2019+ holdout evaluation: lift chart (top-decile capture vs chance), precision@K, calibration table; named-event test — AAPL 2020, NVDA 2021/2024, TSLA 2020/2022, GOOGL/AMZN 2022 scored at 6/3/1 months pre-execution with only then-knowable data, reported vs. matched non-splitter percentiles; honest write-up to docs/research/likelihood_validation.md. ← HUMAN CHECKPOINT: owner reviews validation before CLI ships
   - Verify: notebook re-runs clean; validation doc reviewed.
   - Files: notebooks/10_validation.py, docs/research/likelihood_validation.md
