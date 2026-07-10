@@ -64,12 +64,12 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: notebook re-runs clean; validation doc reviewed.
   - Files: notebooks/10_validation.py, docs/research/likelihood_validation.md
 
-- [ ] **B3. Scoring CLI**
+- [x] **B3. Scoring CLI** *(2026-07-10: live-verified on AAPL/NVDA/COST/BRK-B)*
   - Acceptance: `split-signal score TICKERS...` → likelihood 0–100, component breakdown, separately labeled momentum context, data-sufficiency flags, disclaimer; on-demand cache refresh for unseen tickers; `scan --watchlist` works; refuses insufficient-history tickers with a clear message.
   - Verify: CLI tests (fixtures); live smoke on 5 tickers incl. one thin-history name.
   - Files: src/split_signal/scoring/score.py, src/split_signal/cli.py, tests/test_cli.py
 
-- [ ] **B4. Ship polish**
+- [x] **B4. Ship polish** *(2026-07-10)*
   - Acceptance: README (what it is, what it is NOT — no alpha claims), METHODOLOGY.md updated with B2 results; full suite + lint green; SPEC.md success criteria checked off.
   - Verify: fresh-clone dry run of README instructions.
   - Files: README.md, docs/METHODOLOGY.md, SPEC.md

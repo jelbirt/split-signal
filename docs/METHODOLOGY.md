@@ -1,6 +1,29 @@
-# Split-Signal Methodology — Phase A Research Findings
+# Split-Signal Methodology — Research Findings
 
-**Status: complete, awaiting owner sign-off (task A8 gate).**
+**Status: Phase A complete and owner-approved; Phase B (Split Likelihood
+Index v1) built and holdout-validated 2026-07-10.**
+
+## Phase B outcome (added after the A8 gate)
+
+The likelihood model (plain-numpy logistic; features: ATH proximity,
+as-traded price level, split history, momentum, volatility, liquidity;
+trained ≤2017-Q4 with outcomes ≤2018) validated on the untouched 2019+
+holdout: **AUC 0.740, 3.8× top-decile lift (38% of next-12m splitters
+captured in the top decile)**, and every named event (AAPL 2020, NVDA
+2021/2024, TSLA 2020/2022, GOOGL/AMZN 2022) scored ≥90th percentile at
+6/3/1 months pre-execution on then-knowable data. Details:
+[research/likelihood_validation.md](research/likelihood_validation.md).
+
+Known Phase B caveats: (1) calibration is monotone but absolute
+probabilities overstate ~2× in the holdout era — the market-wide split
+base rate fell from 3.4% (2006–2017) to 1.6% (2019+); treat the 0–100
+percentile index as the primary output and the probability as an upper
+bound. (2) The model cannot encode policy — Berkshire scores high and
+will still never split. (3) Alpha claims remain unsupported (below).
+
+---
+
+## Phase A findings (owner-approved 2026-07-10)
 Study window 2006–2026; universe 5,613 cached US common stocks (S&P 500 ∪
 all listed forward splitters); 1,371 forward-split events analyzed.
 Full evidence: [event_study_results.md](research/event_study_results.md),
