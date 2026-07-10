@@ -87,6 +87,19 @@ class TestMatchControls:
         )
         assert "AAPL" not in controls
 
+    def test_zero_or_nan_event_size_yields_no_controls(self, catalog, candidates) -> None:
+        for bad_size in (0.0, float("nan")):
+            controls = match_controls(
+                event_ticker="AAPL",
+                event_date=pd.Timestamp("2020-08-31"),
+                event_sector=None,
+                event_size=bad_size,
+                candidates=candidates,
+                catalog=catalog,
+                n=3,
+            )
+            assert controls == []
+
     def test_missing_sector_falls_back_to_size_only(self, catalog, candidates) -> None:
         controls = match_controls(
             event_ticker="AAPL",

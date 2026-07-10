@@ -48,15 +48,24 @@ def match_controls(
 
     `candidates` must carry symbol, gics_sector, and size (same-date proxy).
     """
+    if not np.isfinite(event_size) or event_size <= 0:
+        return []
+
     pool = candidates[candidates["symbol"] != event_ticker]
     if event_sector is not None:
         pool = pool[pool["gics_sector"] == event_sector]
     pool = pool[pool["size"].notna() & (pool["size"] > 0)]
-    pool = pool[
-        ~pool["symbol"].map(
-            lambda s: had_split_within(catalog, s, event_date, years=split_window_years)
-        )
-    ]
+
+    # one vectorized scan for "had a forward split within the window",
+    # instead of a per-candidate catalog scan (hot path: events x candidates)
+    window = pd.Timedelta(days=int(365.25 * split_window_years))
+    splitters_near = catalog.loc[
+        catalog["is_forward"]
+        & (catalog["date"] >= event_date - window)
+        & (catalog["date"] <= event_date + window),
+        "ticker",
+    ].unique()
+    pool = pool[~pool["symbol"].isin(splitters_near)]
     if pool.empty:
         return []
 
