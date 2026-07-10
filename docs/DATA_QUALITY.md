@@ -60,3 +60,8 @@ decision gate. Every ingestion run appends a dated section below.
 - events: 1371, controls: 3708, skipped (history): 17
 - sector-matched events: 22% (sector known only for current S&P members)
 - fundamental-feature coverage among events: revenue_growth 39%, eps_growth 49%
+
+## 2026-07-10 10:36 UTC — Backtest run
+
+- events measured: 1371 (train 988, holdout 383)
+- results: docs/research/backtest_results.md
