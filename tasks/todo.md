@@ -37,7 +37,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: `uv run pytest tests/test_features.py` — known-answer + guard tests.
   - Files: src/split_signal/features/{price,fundamental,structural}.py, tests/test_features.py
 
-- [ ] **A6. Event study**
+- [x] **A6. Event study** *(2026-07-10: 1,371 events; ATH-proximity d=0.54, serial-splitter d=0.38, momentum d~0.2, fundamentals ~0)*
   - Acceptance: notebook + promoted module comparing pre-split feature distributions vs. matched controls; discriminating features identified with effect sizes.
   - Verify: control-matching unit tests; notebook re-runs clean top-to-bottom.
   - Files: notebooks/06_event_study.ipynb, src/split_signal/backtest/controls.py, tests/test_controls.py

@@ -49,3 +49,14 @@ decision gate. Every ingestion run appends a dated section below.
 - implausible ratios flagged: 349
 - forward splits per year since 2006: {2006: 177, 2007: 131, 2008: 54, 2009: 47, 2010: 48, 2011: 63, 2012: 62, 2013: 89, 2014: 106, 2015: 61, 2016: 54, 2017: 64, 2018: 55, 2019: 34, 2020: 42, 2021: 56, 2022: 51, 2023: 46, 2024: 62, 2025: 69, 2026: 34}
 - working set (S&P 500 union 2006+ forward splitters): 1132 tickers
+
+## 2026-07-10 04:10 UTC — Fundamentals ingestion run (working set)
+
+- fundamentals fetched: 1122, skipped: 0, no CIK: 2, failed: 8
+- no-CIK sample: SSBI, TOWN
+
+## 2026-07-10 10:34 UTC — Event study run
+
+- events: 1371, controls: 3708, skipped (history): 17
+- sector-matched events: 22% (sector known only for current S&P members)
+- fundamental-feature coverage among events: revenue_growth 39%, eps_growth 49%
