@@ -42,12 +42,12 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: control-matching unit tests; notebook re-runs clean top-to-bottom.
   - Files: notebooks/06_event_study.ipynb, src/split_signal/backtest/controls.py, tests/test_controls.py
 
-- [ ] **A7. Forward-return backtest**
+- [x] **A7. Forward-return backtest** *(2026-07-10: splitters no alpha post-split; profile adds nothing over momentum)*
   - Acceptance: train (2006–2018) / holdout (2019–2025) results for split-profile portfolios: 1y/3y/5y returns vs. SPY and momentum baseline; post-split drift measured; honest verdict stated.
   - Verify: backtest-mechanics unit tests (no-lookahead portfolio formation); notebook re-runs clean.
   - Files: notebooks/07_backtest.ipynb, src/split_signal/backtest/{engine,baselines}.py, tests/test_backtest.py
 
-- [ ] **A8. Methodology synthesis + gates**
+- [x] **A8. Methodology synthesis + gates** *(2026-07-10: METHODOLOGY.md written; AWAITING OWNER SIGN-OFF)*
   - Acceptance: docs/METHODOLOGY.md complete (indicators, weights, evidence, limitations); paid-data recommendation made from DATA_QUALITY.md totals; owner sign-off requested. ← checkpoint 4, HUMAN GATE
   - Verify: owner review.
   - Files: docs/METHODOLOGY.md, tasks/todo.md (Phase B tasks added after gate)

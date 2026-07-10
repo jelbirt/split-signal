@@ -65,3 +65,8 @@ decision gate. Every ingestion run appends a dated section below.
 
 - events measured: 1371 (train 988, holdout 383)
 - results: docs/research/backtest_results.md
+
+## 2026-07-10 10:43 UTC — Profile backtest run
+
+- cohorts: 77 quarters (train 51, holdout 26)
+- results: docs/research/profile_backtest_results.md
