@@ -146,9 +146,11 @@ Phase A (research) is done when:
 4. `docs/METHODOLOGY.md` documents the final indicator set, weights, evidence, and limitations — honest enough that a skeptic could re-run it.
 
 Phase B (tool) is done when:
-5. `split-signal score <TICKERS...>` returns, in under ~30s per ticker (cold cache), a 0–100 index with per-component breakdown and data-quality flags.
-6. Scores are reproducible from cached data; the tool refuses (with a clear message) rather than silently scoring a ticker with insufficient history.
-7. Test suite green; ruff clean.
+5. *(Reframed 2026-07-10 after Phase A findings, owner-approved.)* The index is a **Split Likelihood Index**: a calibrated 0–100 likelihood that the stock executes a forward split within the next 12 months — with momentum context reported separately and **no expected-return claims**.
+6. **Historical point-in-time validation passes:** a model trained only on ≤2018 data, evaluated on 2019+ quarters, shows strong lift (top-decile scores capture a large multiple of chance-rate splitters) and scores known holdout splits (e.g., AAPL 2020, NVDA 2021/2024, TSLA 2020/2022) highly at 6/3/1 months before execution using only data knowable then. Results published in docs/research/.
+7. `split-signal score <TICKERS...>` returns, in under ~30s per ticker (cold cache), the likelihood index with per-component breakdown and data-quality flags.
+8. Scores are reproducible from cached data; the tool refuses (with a clear message) rather than silently scoring a ticker with insufficient history.
+9. Test suite green; ruff clean.
 
 ## Open Questions
 

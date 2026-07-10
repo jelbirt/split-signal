@@ -47,7 +47,29 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: backtest-mechanics unit tests (no-lookahead portfolio formation); notebook re-runs clean.
   - Files: notebooks/07_backtest.ipynb, src/split_signal/backtest/{engine,baselines}.py, tests/test_backtest.py
 
-- [x] **A8. Methodology synthesis + gates** *(2026-07-10: METHODOLOGY.md written; AWAITING OWNER SIGN-OFF)*
+- [x] **A8. Methodology synthesis + gates** *(2026-07-10: METHODOLOGY.md written; owner APPROVED reframe to Split Likelihood Index)*
   - Acceptance: docs/METHODOLOGY.md complete (indicators, weights, evidence, limitations); paid-data recommendation made from DATA_QUALITY.md totals; owner sign-off requested. ← checkpoint 4, HUMAN GATE
   - Verify: owner review.
   - Files: docs/METHODOLOGY.md, tasks/todo.md (Phase B tasks added after gate)
+
+# Phase B — Split Likelihood Index (owner-approved 2026-07-10)
+
+- [ ] **B1. Likelihood model**
+  - Acceptance: logistic model (plain numpy — no heavy deps) on the quarterly panel; label = forward split within next 12 months; features from Q1 findings (ATH proximity, prior splits count/recency, momentum, volatility, price level, liquidity); trained on ≤2018 quarters only; calibrated probability → 0–100 index; model artifact + coefficients saved and versioned.
+  - Verify: unit tests (training convergence on synthetic data, calibration monotonicity, as_of discipline via panel reuse); coefficients sane (ATH proximity positive, etc.).
+  - Files: src/split_signal/scoring/{model,likelihood}.py, tests/test_scoring.py, notebooks/09_likelihood_model.py
+
+- [ ] **B2. Historical point-in-time validation** ("would it have called the splits?")
+  - Acceptance: 2019+ holdout evaluation: lift chart (top-decile capture vs chance), precision@K, calibration table; named-event test — AAPL 2020, NVDA 2021/2024, TSLA 2020/2022, GOOGL/AMZN 2022 scored at 6/3/1 months pre-execution with only then-knowable data, reported vs. matched non-splitter percentiles; honest write-up to docs/research/likelihood_validation.md. ← HUMAN CHECKPOINT: owner reviews validation before CLI ships
+  - Verify: notebook re-runs clean; validation doc reviewed.
+  - Files: notebooks/10_validation.py, docs/research/likelihood_validation.md
+
+- [ ] **B3. Scoring CLI**
+  - Acceptance: `split-signal score TICKERS...` → likelihood 0–100, component breakdown, separately labeled momentum context, data-sufficiency flags, disclaimer; on-demand cache refresh for unseen tickers; `scan --watchlist` works; refuses insufficient-history tickers with a clear message.
+  - Verify: CLI tests (fixtures); live smoke on 5 tickers incl. one thin-history name.
+  - Files: src/split_signal/scoring/score.py, src/split_signal/cli.py, tests/test_cli.py
+
+- [ ] **B4. Ship polish**
+  - Acceptance: README (what it is, what it is NOT — no alpha claims), METHODOLOGY.md updated with B2 results; full suite + lint green; SPEC.md success criteria checked off.
+  - Verify: fresh-clone dry run of README instructions.
+  - Files: README.md, docs/METHODOLOGY.md, SPEC.md
