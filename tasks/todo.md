@@ -17,7 +17,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: fixture-replay unit tests; live smoke on ~20 tickers; then full background run.
   - Files: src/split_signal/data/{prices,stooq}.py, src/split_signal/data/quality.py, tests/test_prices.py
 
-- [ ] **A2b. Full-universe ingestion run + working-set reduction**
+- [x] **A2b. Full-universe ingestion run + working-set reduction** *(2026-07-09: 5,613/5,628 cached, 2,557 with >=15y)*
   - Acceptance: background run complete; working set = S&P 500 ∪ splitters retained; coverage stats (≥15y history %) reviewed. ← checkpoint 1
   - Verify: DATA_QUALITY.md numbers reviewed with owner.
   - Files: data/* (generated), docs/DATA_QUALITY.md
@@ -32,7 +32,7 @@ Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B
   - Verify: unit tests on XBRL normalization fixtures; spot-check AAPL revenue vs. known figures.
   - Files: src/split_signal/data/{edgar,cik}.py, tests/test_edgar.py
 
-- [ ] **A5. Point-in-time feature library**
+- [x] **A5. Point-in-time feature library**
   - Acceptance: features (trailing returns, price level, ATH distance, growth rates, mcap trajectory, volatility, prior splits, sector) each take `as_of` and raise on post-`as_of` data; lookahead-guard tests pass. ← checkpoint 3
   - Verify: `uv run pytest tests/test_features.py` — known-answer + guard tests.
   - Files: src/split_signal/features/{price,fundamental,structural}.py, tests/test_features.py

@@ -35,3 +35,10 @@ decision gate. Every ingestion run appends a dated section below.
 ## Ingestion runs
 
 (appended automatically by `split-signal ingest`)
+
+## 2026-07-09 23:13 UTC — Price ingestion run
+
+- universe symbols: 5628 (S&P 500 members: 503)
+- prices fetched this run: 5608, already cached: 5, failed: 15
+- coverage: 5613/5628 cached, 2557 with >=15y history, 4205 with >=5y, median 12.5y
+- failure sample: AESP (yfinance: empty price frame from yfinance; stooq: 404 Client); ALPX (yfinance: empty price frame from yfinance; stooq: 404 Client); BAC-L (yfinance: empty price frame from yfinance; stooq: 404 Client); EPR-E (yfinance: empty price frame from yfinance; stooq: 404 Client); GAB-H (yfinance: empty price frame from yfinance; stooq: 404 Client); GS-D (yfinance: empty price frame from yfinance; stooq: 404 Client); MBGL (yfinance: empty price frame from yfinance; stooq: 404 Client); MER-K (yfinance: empty price frame from yfinance; stooq: 404 Client); MFP (yfinance: empty price frame from yfinance; stooq: 404 Client); MS-A (yfinance: empty price frame from yfinance; stooq: 404 Client)
