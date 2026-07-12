@@ -24,13 +24,14 @@ def rank_auc(scores: np.ndarray, labels: np.ndarray) -> float:
     if n_pos == 0 or n_neg == 0:
         return float("nan")
     order = scores.argsort(kind="mergesort")
+    sorted_scores = scores[order]
+    # average ranks for ties, vectorized: each run of equal sorted values
+    # spans 1-based ranks (start+1 .. end), whose mean is (start+end+1)/2.
+    boundaries = np.flatnonzero(np.diff(sorted_scores)) + 1
+    starts = np.concatenate(([0], boundaries))
+    ends = np.concatenate((boundaries, [len(scores)]))
     ranks = np.empty(len(scores))
-    ranks[order] = np.arange(1, len(scores) + 1)
-    # average ranks for ties
-    for value in np.unique(scores):
-        mask = scores == value
-        if mask.sum() > 1:
-            ranks[mask] = ranks[mask].mean()
+    ranks[order] = np.repeat((starts + ends + 1) / 2.0, ends - starts)
     return float((ranks[labels == 1].sum() - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg))
 
 

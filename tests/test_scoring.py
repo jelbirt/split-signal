@@ -51,6 +51,29 @@ class TestRankAuc:
         assert rank_auc(np.array([0.9, 0.8, 0.2, 0.1]), labels) == pytest.approx(0.0)
         assert rank_auc(np.array([0.5, 0.5, 0.5, 0.5]), labels) == pytest.approx(0.5)
 
+    def test_ties_match_reference_implementation(self) -> None:
+        def reference_auc(scores: np.ndarray, labels: np.ndarray) -> float:
+            n_pos = labels.sum()
+            n_neg = len(labels) - n_pos
+            order = scores.argsort(kind="mergesort")
+            ranks = np.empty(len(scores))
+            ranks[order] = np.arange(1, len(scores) + 1)
+            for value in np.unique(scores):
+                mask = scores == value
+                if mask.sum() > 1:
+                    ranks[mask] = ranks[mask].mean()
+            return float(
+                (ranks[labels == 1].sum() - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg)
+            )
+
+        rng = np.random.default_rng(11)
+        # heavy ties (few distinct values) alongside continuous scores
+        tied = rng.integers(0, 10, size=2000).astype(float)
+        continuous = rng.normal(size=2000)
+        labels = (rng.uniform(size=2000) < 0.3).astype(float)
+        for scores in (tied, continuous):
+            assert rank_auc(scores, labels) == reference_auc(scores, labels)
+
 
 class TestArtifactScoring:
     @pytest.fixture
@@ -84,6 +107,20 @@ class TestArtifactScoring:
     def test_missing_required_feature_rejected(self, artifact) -> None:
         features = dict.fromkeys(artifact.model.feature_names, 0.5)
         features[artifact.model.feature_names[0]] = None
+        with pytest.raises(ValueError, match="missing"):
+            score_features(features, artifact)
+
+    def test_nan_feature_rejected(self, artifact) -> None:
+        # NaN must be treated as missing, not scored into a NaN probability
+        # with a fabricated index of 100.
+        features = dict.fromkeys(artifact.model.feature_names, 0.5)
+        features[artifact.model.feature_names[0]] = float("nan")
+        with pytest.raises(ValueError, match="missing"):
+            score_features(features, artifact)
+
+    def test_inf_feature_rejected(self, artifact) -> None:
+        features = dict.fromkeys(artifact.model.feature_names, 0.5)
+        features[artifact.model.feature_names[0]] = float("inf")
         with pytest.raises(ValueError, match="missing"):
             score_features(features, artifact)
 

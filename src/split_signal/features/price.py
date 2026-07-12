@@ -31,6 +31,13 @@ def trailing_return(
         )
     series = bars.set_index("date")["adj_close"]
     start_value = float(series.asof(window_start))
+    if not math.isfinite(start_value):
+        # History passed the coverage guard but starts after window_start,
+        # so asof found no bar; raising beats silently returning NaN.
+        raise InsufficientHistoryError(
+            f"no bar at or before window start {window_start.date()}, "
+            f"have data from {bars['date'].min().date()}"
+        )
     end_value = float(series.iloc[-1])
     return end_value / start_value - 1.0
 

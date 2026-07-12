@@ -107,10 +107,16 @@ def compute_scoring_features(
 def score_features(features: dict, artifact: LikelihoodArtifact) -> dict:
     """Score one feature dict -> {probability, index, components}.
 
-    Raises ValueError when any model feature is missing (None) — the
-    caller decides how to surface the refusal.
+    Raises ValueError when any model feature is missing (None) or
+    non-finite (NaN/inf) — the caller decides how to surface the
+    refusal. NaN must never reach the model: predict_proba would return
+    NaN and searchsorted would map it to a fabricated index of 100.
     """
-    missing = [n for n in artifact.model.feature_names if features.get(n) is None]
+    missing = [
+        n
+        for n in artifact.model.feature_names
+        if features.get(n) is None or not math.isfinite(features[n])
+    ]
     if missing:
         raise ValueError(f"missing features: {', '.join(missing)}")
 

@@ -2,11 +2,14 @@
 
 Subcommands:
     ingest  Build/refresh the local data cache for a universe.
-    score   Compute the predictability index for one or more tickers.
+    score   Compute the Split Likelihood Index for one or more tickers.
     scan    Score every ticker in a watchlist file.
 
-`score` and `scan` are stubs until the Phase A methodology is validated
-(see SPEC.md); they currently explain their status and exit non-zero.
+`score` and `scan` print one block per scored ticker (sorted by index,
+highest first); tickers that cannot be scored honestly are reported as
+REFUSED on stderr instead of receiving a fabricated number. Every run ends
+with the model version, the no-split-alpha note, and the disclaimer. Exit
+status is 0 if at least one ticker scored, 1 otherwise.
 """
 
 from __future__ import annotations

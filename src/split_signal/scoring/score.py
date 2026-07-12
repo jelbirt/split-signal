@@ -15,6 +15,7 @@ import pandas as pd
 
 from split_signal.data.prices import (
     DEFAULT_FETCHERS,
+    Fetcher,
     load_prices,
     price_cache_path,
 )
@@ -44,24 +45,49 @@ class TickerScore:
 
 
 def ensure_fresh_prices(
-    data_dir: str | Path, ticker: str, max_age_days: int = 7
+    data_dir: str | Path,
+    ticker: str,
+    max_age_days: int = 7,
+    fetchers: list[Fetcher] | None = None,
 ) -> pd.DataFrame:
+    """Return cached prices for ``ticker``, refreshing the cache when stale.
+
+    Semantics:
+      * Fresh cache (last bar within ``max_age_days``): returned as-is, no network.
+      * No cache: the first successful fetch is written and returned; if every
+        fetcher fails, raises ScoreRefusal.
+      * Stale cache: a fresh fetch replaces the cache only if it covers at least
+        the cached date range (fresh min <= cached min and fresh max >= cached max).
+        A truncated fetch is skipped (the next fetcher is tried); if no fetcher
+        yields a covering frame — or all fail — the intact-but-stale cached frame
+        is returned rather than clobbering or refusing.
+    """
+    fetchers = DEFAULT_FETCHERS if fetchers is None else fetchers
     cache = price_cache_path(data_dir, ticker)
+    cached: pd.DataFrame | None = None
     if cache.exists():
-        prices = load_prices(data_dir, ticker)
-        age = pd.Timestamp.now().normalize() - prices["date"].max()
+        cached = load_prices(data_dir, ticker)
+        age = pd.Timestamp.now().normalize() - cached["date"].max()
         if age.days <= max_age_days:
-            return prices
+            return cached
     errors: list[str] = []
-    for name, fetch in DEFAULT_FETCHERS:
+    for name, fetch in fetchers:
         try:
             prices = fetch(ticker)
         except Exception as exc:  # noqa: BLE001 — collected into the refusal
             errors.append(f"{name}: {exc}")
             continue
+        if cached is not None and (
+            prices["date"].min() > cached["date"].min()
+            or prices["date"].max() < cached["date"].max()
+        ):
+            errors.append(f"{name}: truncated history, cache kept")
+            continue
         cache.parent.mkdir(parents=True, exist_ok=True)
         prices.to_parquet(cache, index=False)
         return prices
+    if cached is not None:
+        return cached  # stale but intact beats no data — staleness shows in data_end
     raise ScoreRefusal(f"no price data for {ticker} ({'; '.join(errors)})")
 
 
@@ -71,9 +97,10 @@ def score_ticker(
     artifact: LikelihoodArtifact | None = None,
     as_of: pd.Timestamp | None = None,
     max_age_days: int = 7,
+    fetchers: list[Fetcher] | None = None,
 ) -> TickerScore:
     artifact = artifact or LikelihoodArtifact.load()
-    prices = ensure_fresh_prices(data_dir, ticker, max_age_days=max_age_days)
+    prices = ensure_fresh_prices(data_dir, ticker, max_age_days=max_age_days, fetchers=fetchers)
     if as_of is None:
         as_of = prices["date"].max()  # last knowable bar
 

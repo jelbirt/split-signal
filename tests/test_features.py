@@ -59,6 +59,14 @@ class TestTrailingReturn:
         with pytest.raises(InsufficientHistoryError):
             trailing_return(linear_prices, as_of=AS_OF, days=3 * 365)
 
+    def test_history_inside_coverage_slack_raises_not_nan(self) -> None:
+        # 340 days of history passes the 0.9 * 365 = 328-day coverage guard,
+        # but asof(as_of - 365d) finds no bar; must raise, not return NaN.
+        dates = pd.date_range(end=AS_OF, periods=340, freq="D")
+        frame = _price_frame(dates, np.linspace(100.0, 200.0, 340))
+        with pytest.raises(InsufficientHistoryError):
+            trailing_return(frame, as_of=AS_OF, days=365)
+
     def test_invariant_to_future_data(self, linear_prices) -> None:
         before = trailing_return(linear_prices, as_of=AS_OF, days=365)
         future = _price_frame(
