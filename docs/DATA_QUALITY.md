@@ -81,3 +81,18 @@ decision gate. Every ingestion run appends a dated section below.
 
 - holdout AUC 0.740; top-decile lift 3.8x (rate 5.99% vs base 1.58%); top-decile capture 38%
 - report: docs/research/likelihood_validation.md
+
+## 2026-07-12 19:28 UTC — Horizon-decay experiment
+
+- 12m AUC 0.740 lift 3.7x; 18m AUC 0.726 lift 3.5x; 24m AUC 0.718 lift 3.2x; 36m AUC 0.706 lift 2.8x
+- report: docs/research/horizon_decay.md
+
+## 2026-07-12 19:30 UTC — Horizon-decay experiment
+
+- 12m AUC 0.740 lift 3.7x; 18m AUC 0.726 lift 3.5x; 24m AUC 0.718 lift 3.2x; 36m AUC 0.706 lift 2.8x; 48m AUC 0.699 lift 2.8x; 60m AUC 0.689 lift 2.7x
+- report: docs/research/horizon_decay.md
+
+## 2026-07-12 19:37 UTC — Likelihood v1 holdout validation
+
+- holdout AUC 0.740; top-decile lift 3.8x (rate 5.99% vs base 1.58%); top-decile capture 38%
+- report: docs/research/likelihood_validation.md
