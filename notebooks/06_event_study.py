@@ -38,12 +38,17 @@ events = catalog[
 print(f"events under study: {len(events)}")
 
 # %% price cache helpers (in-memory memo over the parquet cache)
+# Bounded FIFO memo: dicts preserve insertion order, so evicting the first key
+# drops the oldest entry. Keeps peak memory at ~_PRICES_MEMO_MAX frames.
+_PRICES_MEMO_MAX = 512
 _prices_memo: dict[str, pd.DataFrame | None] = {}
 
 
 def prices_for(symbol: str) -> pd.DataFrame | None:
     if symbol not in _prices_memo:
         path = price_cache_path(DATA, symbol)
+        if len(_prices_memo) >= _PRICES_MEMO_MAX:
+            del _prices_memo[next(iter(_prices_memo))]
         _prices_memo[symbol] = pd.read_parquet(path) if path.exists() else None
     return _prices_memo[symbol]
 

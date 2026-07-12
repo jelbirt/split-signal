@@ -2,6 +2,9 @@
 name = "split-signal"
 version = "0.1.0"
 description = "Research-backed stock split predictability index (personal decision-support; not financial advice)"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Jelbirt" }]
 requires-python = ">=3.11"
 dependencies = [
     "pandas>=2.2",

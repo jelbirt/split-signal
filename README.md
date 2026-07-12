@@ -53,8 +53,13 @@ format, `notebooks/`), and honest negative results are in `docs/`.
 ## Development
 
 ```bash
-uv run pytest          # 91 tests, no network
+uv run pytest          # 100 tests, no network
 uv run ruff check .
 uv run python notebooks/09_likelihood_model.py   # retrain (rebuilds panel)
 uv run python notebooks/10_validation.py         # re-validate
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE). The research-tool disclaimer above applies
+independently of the license.
