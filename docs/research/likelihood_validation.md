@@ -24,15 +24,15 @@ Model trained through 2017-12-31; holdout 50006 ticker-quarters over 26 quarters
 
 ## Named-event test (index = percentile vs reference panel)
 
-| ticker | split date | 6m before | 3m before | 1m before |
-|---|---|---|---|---|
-| AAPL | 2020-08-31 | 90 | 94 | 97 |
-| NVDA | 2021-07-20 | 98 | 99 | 100 |
-| NVDA | 2024-06-10 | 100 | 100 | 100 |
-| TSLA | 2020-08-31 | 91 | 100 | 100 |
-| TSLA | 2022-08-25 | 95 | 92 | 95 |
-| GOOGL | 2022-07-18 | 100 | 97 | 90 |
-| AMZN | 2022-06-06 | 100 | 96 | 90 |
+| ticker | split date | 12m | 9m | 6m | 3m | 1m before |
+|---|---|---|---|---|---|---|
+| AAPL | 2020-08-31 | 83 | 92 | 90 | 94 | 97 |
+| NVDA | 2021-07-20 | 99 | 100 | 98 | 99 | 100 |
+| NVDA | 2024-06-10 | 100 | 100 | 100 | 100 | 100 |
+| TSLA | 2020-08-31 | 39 | 77 | 91 | 100 | 100 |
+| TSLA | 2022-08-25 | 100 | 100 | 95 | 92 | 95 |
+| GOOGL | 2022-07-18 | 100 | 100 | 100 | 97 | 90 |
+| AMZN | 2022-06-06 | 100 | 100 | 100 | 96 | 90 |
 
 Reminder: this index predicts the split EVENT only. Phase A showed the
 event carries no expected excess return (docs/METHODOLOGY.md).

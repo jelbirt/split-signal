@@ -9,8 +9,15 @@ split within the next 12 months?"* — built on 20 years of data
 
 - **It predicts the split event.** Holdout-validated (2019+, untouched by
   training): AUC 0.740, 3.8× top-decile lift; AAPL 2020, NVDA 2021/2024,
-  TSLA 2020/2022, GOOGL/AMZN 2022 all scored ≥90th percentile at 6/3/1
-  months before execution using only then-knowable data.
+  TSLA 2020/2022, GOOGL/AMZN 2022 all scored ≥90th percentile at 6–12
+  months before execution — before any public announcement — using only
+  then-knowable data.
+- **The signal reaches years, not months.** Retrained at longer label
+  windows, ranking skill decays gently (AUC 0.740 → 0.689 from 1y to 5y;
+  top decile ≈ 1-in-5 splits within 5 years vs 1-in-13 base) — see
+  [docs/research/horizon_decay.md](docs/research/horizon_decay.md).
+  Practical use: watchlist builder at 3–5 years, timing sharpener
+  inside 12 months.
 - **It is NOT a buy signal.** The Phase A research
   ([docs/METHODOLOGY.md](docs/METHODOLOGY.md)) found the median splitter
   *underperforms* SPY after splitting, and the pre-split profile adds no

@@ -83,7 +83,7 @@ NAMED = [
 named_rows = []
 for ticker, split_date in NAMED:
     prices = load_prices(DATA, ticker)
-    for months in (6, 3, 1):
+    for months in (12, 9, 6, 3, 1):
         as_of = pd.Timestamp(split_date) - pd.Timedelta(days=int(30.44 * months))
         features = compute_scoring_features(prices, catalog, ticker, as_of)
         try:
@@ -127,17 +127,17 @@ lines = [
     "",
     "## Named-event test (index = percentile vs reference panel)",
     "",
-    "| ticker | split date | 6m before | 3m before | 1m before |",
-    "|---|---|---|---|---|",
+    "| ticker | split date | 12m | 9m | 6m | 3m | 1m before |",
+    "|---|---|---|---|---|---|---|",
 ]
 for (ticker, split_date), group in named.groupby(["ticker", "split"], sort=False):
     by_month = {int(r["months_before"]): r for _, r in group.iterrows()}
     cells = [
         (f"{int(by_month[m]['index'])}" if "index" in by_month[m]
          and pd.notna(by_month[m].get("index")) else "n/a")
-        for m in (6, 3, 1)
+        for m in (12, 9, 6, 3, 1)
     ]
-    lines.append(f"| {ticker} | {split_date} | {cells[0]} | {cells[1]} | {cells[2]} |")
+    lines.append(f"| {ticker} | {split_date} | " + " | ".join(cells) + " |")
 lines += [
     "",
     "Reminder: this index predicts the split EVENT only. Phase A showed the",

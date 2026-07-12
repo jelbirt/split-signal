@@ -14,6 +14,15 @@ captured in the top decile)**, and every named event (AAPL 2020, NVDA
 6/3/1 months pre-execution on then-knowable data. Details:
 [research/likelihood_validation.md](research/likelihood_validation.md).
 
+**Horizon reach (added 2026-07-12):** retraining the same features at
+12/18/24/36/48/60-month label windows shows graceful decay, not a cliff —
+holdout AUC 0.740 → 0.689 and top-decile lift 3.7× → 2.7× from one year
+to five ([research/horizon_decay.md](research/horizon_decay.md)). Notably,
+the 60-month model trains only on 2006–2013 data yet holds AUC 0.689 on
+2019–2021 outcomes, evidence the pre-split profile is structural rather
+than era-specific. Caveat: the 5-year holdout is only 10 quarters and
+includes the favorable 2020–21 split wave.
+
 Known Phase B caveats: (1) calibration is monotone but absolute
 probabilities overstate ~2× in the holdout era — the market-wide split
 base rate fell from 3.4% (2006–2017) to 1.6% (2019+); treat the 0–100
