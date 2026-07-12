@@ -96,3 +96,7 @@ decision gate. Every ingestion run appends a dated section below.
 
 - holdout AUC 0.740; top-decile lift 3.8x (rate 5.99% vs base 1.58%); top-decile capture 38%
 - report: docs/research/likelihood_validation.md
+
+## 2026-07-12 19:38 UTC — Split-outcome breakdown
+
+- events: 1371; report: docs/research/split_outcomes.md
