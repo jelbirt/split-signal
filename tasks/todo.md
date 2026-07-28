@@ -2,6 +2,18 @@
 
 Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B tasks get written after the A8 methodology gate.
 
+## Pen registry — `data/raw` (canonical for split-signal AND signal-lab)
+
+`data/raw/{prices,edgar}` is one physical store shared with signal-lab,
+which mounts it via symlinks; both `split-signal ingest` and `signal-lab
+ingest` write it. **One ingest or cache-writing campaign at a time, across
+both repos and all their worktrees.** `docs/DATA_QUALITY.md` rides the same
+pen. See [CLAUDE.md](../CLAUDE.md).
+
+- **Pen holder:** _free_ — no ingest campaign running.
+- **How to take it:** edit this line to name your branch/worktree and date
+  before starting; set it back to free when done.
+
 - [x] **A0. Scaffold project**
   - Acceptance: `uv sync` works; `uv run split-signal --help` shows ingest/score/scan stubs; `uv run pytest` and `uv run ruff check .` pass on empty suite; data dirs gitignored.
   - Verify: run all four commands.
