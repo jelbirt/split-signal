@@ -25,22 +25,28 @@ uv run python notebooks/09_likelihood_model.py   # retrain, rebuilds panel
 uv run python notebooks/10_validation.py         # re-validate
 ```
 
-## Shared mutable state — `data/raw` is cross-repo
+## Shared mutable state — `data/raw`
 
-`data/raw/{prices,edgar}` is **one physical store, 824M, shared with the
-signal-lab repo.** signal-lab's `data/raw/prices` and `data/raw/edgar` are
-symlinks pointing into this checkout, so `signal-lab ingest` — run monthly
-by signal-lab's `data-refresh` skill — writes through them into these
-directories. `uv run split-signal ingest` writes the same store from this
-side.
+`data/raw/{prices,edgar}` is **one physical store, 824M**, written only by
+`uv run split-signal ingest`. Every worktree symlinks to the same directory,
+so writes from any of them land in the same place.
 
 **One ingest or cache-writing campaign at a time**, across every worktree of
-this repo *and* across signal-lab. Two concurrent writers corrupt a cache
-that costs hours to rebuild against rate-limited sources.
-`docs/DATA_QUALITY.md` is updated by those runs and rides the same pen.
+this repo. Two concurrent writers corrupt a cache that costs hours to
+rebuild against rate-limited sources. `docs/DATA_QUALITY.md` is updated by
+those runs and rides the same pen.
 
-**Pen registry: `tasks/todo.md`** — canonical for both repos. Check it
-before running ingest; record it there when you take the pen.
+**Pen registry: `tasks/todo.md`.** Check it before running ingest; record it
+there when you take the pen.
+
+**signal-lab reads this cache but never writes it.** Its
+`data/raw/{prices,edgar}` are symlinks into this checkout; its own ingest
+writes only to its `*_local` overlay directories, enforced structurally by
+`signal_lab.data.cache.write_path` (decision D1 in signal-lab's
+`tasks/plan.md`). So signal-lab is not a co-holder of the pen — but
+deleting, relocating, or rewriting `data/raw` here breaks it silently.
+Ordinary ingest top-ups are safe for it; destructive changes need
+coordination.
 
 `data/processed` is deliberately NOT shared between worktrees — it is
 regenerable, and concurrent rebuilds through one directory would silently

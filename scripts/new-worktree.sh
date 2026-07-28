@@ -24,22 +24,40 @@
 #   no .env         this repo has no secrets file, so nothing is copied.
 #
 # SHARED-STATE RULE — who holds the pen on data/raw:
-#   data/raw is written by `uv run split-signal ingest` in THIS repo, and
-#   ALSO by signal-lab: its data/raw/{prices,edgar} are symlinks into this
-#   checkout, so `signal-lab ingest` (run monthly by signal-lab's
-#   data-refresh skill) writes through them into these same directories.
-#   Only ONE ingest or cache-writing campaign may run at a time — across
-#   every worktree of this repo AND across signal-lab. docs/DATA_QUALITY.md
-#   is updated by those runs and rides the same pen.
-#   Pen registry: tasks/todo.md (canonical for both repos).
+#   data/raw is written only by `uv run split-signal ingest`, and every
+#   worktree symlinks to the same physical directory. Only ONE ingest or
+#   cache-writing campaign may run at a time across all of them.
+#   docs/DATA_QUALITY.md is updated by those runs and rides the same pen.
+#   Pen registry: tasks/todo.md.
+#
+#   signal-lab READS this cache (its data/raw/{prices,edgar} are symlinks
+#   into this checkout) but never writes it — its ingest writes only to its
+#   own *_local overlay dirs. It is not a pen co-holder, but deleting or
+#   relocating data/raw here breaks it silently.
 
 set -euo pipefail
 
 MAIN="$(git rev-parse --show-toplevel)"
 BRANCH="${1:?usage: scripts/new-worktree.sh <branch> [dir]}"
-DIR="${2:-$MAIN/../split-signal-$BRANCH}"
+DIR="${2:-$(dirname "$MAIN")/$(basename "$MAIN")-$BRANCH}"
 
-if git -C "$MAIN" show-ref --verify --quiet "refs/heads/$BRANCH"; then
+# A half-finished worktree is worse than none: it can look ready while
+# missing its data wiring, or leave a branch behind with no worktree. Undo
+# whatever we created if any step below fails.
+BRANCH_PREEXISTED=0
+git -C "$MAIN" show-ref --verify --quiet "refs/heads/$BRANCH" && BRANCH_PREEXISTED=1
+
+cleanup_failed() {
+  echo "new-worktree.sh: failed — rolling back" >&2
+  git -C "$MAIN" worktree remove --force "$DIR" 2>/dev/null || true
+  if [ "$BRANCH_PREEXISTED" -eq 0 ]; then
+    git -C "$MAIN" branch -D "$BRANCH" 2>/dev/null || true
+  fi
+  git -C "$MAIN" worktree prune 2>/dev/null || true
+}
+trap cleanup_failed ERR
+
+if [ "$BRANCH_PREEXISTED" -eq 1 ]; then
   git -C "$MAIN" worktree add "$DIR" "$BRANCH"
 else
   git -C "$MAIN" worktree add -b "$BRANCH" "$DIR" main
@@ -51,12 +69,14 @@ mkdir -p "$DIR/data"
 ln -sfn "$MAIN/data/raw" "$DIR/data/raw"
 mkdir -p "$DIR/data/processed"
 
+trap - ERR
+
 echo
 echo "worktree ready: $DIR (branch: $BRANCH)"
 echo
 echo "  data/raw       -> SHARED symlink into the main checkout."
-echo "                    signal-lab writes this store too — one ingest at a"
-echo "                    time, across both repos. Pen: tasks/todo.md."
+echo "                    One ingest at a time across all worktrees."
+echo "                    Pen: tasks/todo.md."
 echo "  data/processed -> empty and yours; rebuild with"
 echo "                    uv run python notebooks/09_likelihood_model.py"
 echo "                    uv run python notebooks/10_validation.py"

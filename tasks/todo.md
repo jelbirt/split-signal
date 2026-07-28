@@ -2,13 +2,14 @@
 
 Per [plan.md](plan.md). One task per focused session; each ≤ ~5 files. Phase B tasks get written after the A8 methodology gate.
 
-## Pen registry — `data/raw` (canonical for split-signal AND signal-lab)
+## Pen registry — `data/raw`
 
-`data/raw/{prices,edgar}` is one physical store shared with signal-lab,
-which mounts it via symlinks; both `split-signal ingest` and `signal-lab
-ingest` write it. **One ingest or cache-writing campaign at a time, across
-both repos and all their worktrees.** `docs/DATA_QUALITY.md` rides the same
-pen. See [CLAUDE.md](../CLAUDE.md).
+`data/raw/{prices,edgar}` is one physical store, written only by
+`split-signal ingest`, and every worktree symlinks to it. **One ingest or
+cache-writing campaign at a time across all worktrees.**
+`docs/DATA_QUALITY.md` rides the same pen. signal-lab reads this cache
+through symlinks but never writes it, so it is not a co-holder — though
+deleting or relocating `data/raw` breaks it. See [CLAUDE.md](../CLAUDE.md).
 
 - **Pen holder:** _free_ — no ingest campaign running.
 - **How to take it:** edit this line to name your branch/worktree and date
