@@ -6,7 +6,11 @@ __pycache__/
 .ruff_cache/
 
 # Data caches (regenerable; fixtures under data/fixtures/ ARE committed)
-data/raw/
+# No trailing slash on data/raw: in a worktree it is a SYMLINK to the main
+# checkout's cache (see scripts/new-worktree.sh), and a "dir/" pattern does
+# not match a symlink — which would leave every worktree permanently dirty
+# and un-teardownable.
+data/raw
 data/processed/
 
 # Notebook noise
