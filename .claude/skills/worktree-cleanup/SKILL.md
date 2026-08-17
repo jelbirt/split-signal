@@ -21,9 +21,14 @@ the user, then do it via `scripts/rm-worktree.sh`, which owns the gates.
    candidate. Otherwise (or on "sweep"), walk `git worktree list --porcelain`
    and skip entries with no `branch` line (detached HEAD or bare) plus the
    main checkout itself. For each remaining worktree, check both:
-   - **Merged** — `git merge-base --is-ancestor {branch} main`, falling
-     back to `gh pr list --state merged --head {branch}` to catch
-     squash-merges, which the ancestor check cannot see.
+   - **Merged** — `git merge-base --is-ancestor refs/heads/{branch}
+     refs/heads/main`, or the same against `refs/remotes/origin/main`
+     (fetch first), falling back to `gh pr list --state merged --head
+     {branch}` to catch squash-merges, which the ancestor check cannot see.
+     Fully-qualified refs: a bare name lets a same-named tag win the lookup
+     and make an unmerged branch look merged. Check origin too —
+     workstreams here merge by PR, so local `main` is routinely behind and
+     a local-only test would drop merged branches off this list.
    - **Clean** — `git -C {dir} status --porcelain` is empty.
 
 3. **Present the plan and get confirmation.** List candidates with branch,
