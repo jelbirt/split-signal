@@ -78,10 +78,12 @@ esac
 
 # 3. clean check — capture the output and the EXIT CODE separately. A command
 #    substitution inside [ -n ... ] throws the exit code away, so a git status
-#    that FAILS produces empty output and reads as "clean".
-if ! STATUS="$(git -C "$DIR" status --porcelain 2>&1)"; then
+#    that FAILS produces empty output and reads as "clean". Keep stderr out of
+#    the captured value: git can warn (e.g. an unreadable subdirectory) and
+#    still exit 0, and a warning folded into STATUS reads as a dirty tree.
+if ! STATUS="$(git -C "$DIR" status --porcelain 2>/dev/null)"; then
   echo "refusing: cannot read the status of the worktree at $DIR:" >&2
-  printf '%s\n' "$STATUS" >&2
+  git -C "$DIR" status --porcelain >&2 || true
   exit 1
 fi
 if [ -n "$STATUS" ]; then
