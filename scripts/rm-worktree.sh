@@ -40,9 +40,12 @@ set -euo pipefail
 # paths, so it catches an ancestor symlink on the worktree path. Logical
 # catches the mirror case, which is live in this repo: data/raw is symlinked
 # INTO every worktree, so standing in it resolves back OUT to the main
-# checkout and a physical-only gate 2 would pass while the caller is inside a
-# directory this teardown is about to delete. Read after any cd, $PWD is no
-# longer the caller's directory and the gate compares a path against itself.
+# checkout and a physical-only gate 2
+# would pass. Teardown does NOT delete that directory: it removes the symlink
+# and never follows it to the target. What breaks is that $PWD is left naming
+# a path inside a worktree that no longer exists, and the gate's contract is
+# that you are not standing in the worktree being removed.
+# Both must be read HERE: after any cd, $PWD is no longer the caller's dir.
 INVOKED_FROM="$(pwd -P 2>/dev/null || printf '%s' "${PWD:-}")"
 INVOKED_LOGICAL="${PWD:-$INVOKED_FROM}"
 
@@ -85,9 +88,11 @@ fi
 # 2. do not saw off the branch you are sitting on. Compare BOTH spellings of
 #    the cwd against BOTH spellings of the worktree path; see the note at the
 #    top of this file for why one of each is not enough.
+# If that cd fails (gate 1 already proved $DIR exists, so: permissions, or a
+# race), DIR_REAL collapses to $DIR and the ancestor-symlink half goes quiet.
+# Gate 3 is the backstop: git status on an unreadable $DIR refuses right below.
 DIR_REAL="$(cd "$DIR" 2>/dev/null && pwd -P || printf '%s' "$DIR")"
 for d in "$INVOKED_FROM" "$INVOKED_LOGICAL"; do
-  [ -n "$d" ] || continue
   case "$d/" in
     "$DIR"/*|"$DIR_REAL"/*)
       echo "refusing: current directory is inside $DIR; cd out first (e.g. to $MAIN)" >&2
