@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# rm-worktree.sh — tear down a finished workstream worktree; the mirror of
+# rm-worktree.sh: tear down a finished workstream worktree; the mirror of
 # new-worktree.sh.
 #
 # Usage: scripts/rm-worktree.sh <branch> [--force] [--delete-remote]
@@ -19,21 +19,32 @@
 #      --force)
 #
 # What removal destroys: the worktree directory, including its .venv and its
-# rebuilt data/processed. The data/raw SYMLINK is removed but its TARGET —
-# the shared 824M cache in the main checkout, which signal-lab also reads —
+# rebuilt data/processed. The data/raw SYMLINK is removed but its TARGET,
+# the shared 824M cache in the main checkout, which signal-lab also reads,
 # is never touched.
 #
 # ORDER MATTERS, AND SO DOES WHO DECIDES. The worktree has to be removed
 # before the branch, because git will not delete a branch that is still
-# checked out — which makes the removal irreversible by the time the branch
+# checked out, which makes the removal irreversible by the time the branch
 # delete runs. So nothing after it may veto: gate 4 above is the sole
 # authority and the branch goes with `git branch -D`. `git branch -d` asks a
-# DIFFERENT question — reachable from HEAD or upstream, not "merged into
-# main" — and when the two disagree it refuses with the worktree already
+# DIFFERENT question: reachable from HEAD or upstream, not "merged into
+# main", and when the two disagree it refuses with the worktree already
 # gone, leaving a half-torn-down repo, no prune, and an error that steers
 # the next attempt to --force, the one flag that skips the merged gate.
 
 set -euo pipefail
+
+# Snapshot the caller's cwd HERE, before anything can change directories, in
+# BOTH spellings. Physical (symlinks resolved) is how git reports worktree
+# paths, so it catches an ancestor symlink on the worktree path. Logical
+# catches the mirror case, which is live in this repo: data/raw is symlinked
+# INTO every worktree, so standing in it resolves back OUT to the main
+# checkout and a physical-only gate 2 would pass while the caller is inside a
+# directory this teardown is about to delete. Read after any cd, $PWD is no
+# longer the caller's directory and the gate compares a path against itself.
+INVOKED_FROM="$(pwd -P 2>/dev/null || printf '%s' "${PWD:-}")"
+INVOKED_LOGICAL="${PWD:-$INVOKED_FROM}"
 
 BRANCH=""
 DELETE_REMOTE=0
@@ -71,12 +82,20 @@ if [ ! -d "$DIR" ]; then
   exit 1
 fi
 
-# 2. do not saw off the branch you are sitting on
-case "$PWD/" in
-  "$DIR"/*) echo "refusing: current directory is inside $DIR — cd out first (e.g. to $MAIN)" >&2; exit 1 ;;
-esac
+# 2. do not saw off the branch you are sitting on. Compare BOTH spellings of
+#    the cwd against BOTH spellings of the worktree path; see the note at the
+#    top of this file for why one of each is not enough.
+DIR_REAL="$(cd "$DIR" 2>/dev/null && pwd -P || printf '%s' "$DIR")"
+for d in "$INVOKED_FROM" "$INVOKED_LOGICAL"; do
+  [ -n "$d" ] || continue
+  case "$d/" in
+    "$DIR"/*|"$DIR_REAL"/*)
+      echo "refusing: current directory is inside $DIR; cd out first (e.g. to $MAIN)" >&2
+      exit 1 ;;
+  esac
+done
 
-# 3. clean check — capture the output and the EXIT CODE separately. A command
+# 3. clean check: capture the output and the EXIT CODE separately. A command
 #    substitution inside [ -n ... ] throws the exit code away, so a git status
 #    that FAILS produces empty output and reads as "clean". Keep stderr out of
 #    the captured value: git can warn (e.g. an unreadable subdirectory) and
@@ -94,7 +113,7 @@ fi
 
 # 4. merged check. Fully-qualified refs only: a bare name lets a same-named
 #    TAG win the lookup and make an unmerged branch look merged. Check origin
-#    as well as local main — workstreams here merge by PR on GitHub, so local
+#    as well as local main; workstreams here merge by PR on GitHub, so local
 #    main is routinely behind and a local-only test would report a merged
 #    branch as unmerged, training the --force habit.
 MERGED=0
@@ -115,19 +134,31 @@ fi
 
 git -C "$MAIN" worktree remove "$DIR"
 # -D, not -d: see the header. Gate 4 above is the authority, and nothing may
-# veto once the worktree — the irreversible part — is already gone.
+# veto once the worktree (the irreversible part) is already gone.
 git -C "$MAIN" branch -D "$BRANCH"
 git -C "$MAIN" worktree prune
 
+REMOTE_FAILED=0
 if [ "$DELETE_REMOTE" -eq 1 ]; then
   if git -C "$MAIN" ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
-    git -C "$MAIN" push origin --delete "$BRANCH"
+    # Non-fatal: every local step above is done and is NOT retryable (a
+    # re-run exits early, the worktree and branch being gone). Aborting here
+    # under set -e would report a failed teardown that fully succeeded.
+    git -C "$MAIN" push origin --delete "$BRANCH" || {
+      REMOTE_FAILED=1
+      echo "  local teardown COMPLETED; only the remote delete failed. Retry with:" >&2
+      echo "    git -C $MAIN push origin --delete $BRANCH" >&2
+    }
   else
-    echo "origin/$BRANCH already gone — nothing to delete remotely"
+    echo "origin/$BRANCH already gone, nothing to delete remotely"
   fi
 fi
 
 echo
-echo "worktree torn down: $DIR (branch: $BRANCH)"
+if [ "$REMOTE_FAILED" -eq 1 ]; then
+  echo "worktree torn down: $DIR (branch: $BRANCH; remote branch still present)"
+else
+  echo "worktree torn down: $DIR (branch: $BRANCH)"
+fi
 echo "  remaining worktrees:"
 git -C "$MAIN" worktree list | sed 's/^/    /'
